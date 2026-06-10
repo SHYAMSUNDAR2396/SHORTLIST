@@ -2,9 +2,12 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+# Copy requirements files
+COPY requirements.txt ./requirements.txt
+COPY backend/requirements.txt ./backend-requirements.txt
+
 # Install Python dependencies
-COPY requirements.txt backend/requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt -r backend/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt -r backend-requirements.txt
 
 # Copy application code
 COPY ranking/ ./ranking/
