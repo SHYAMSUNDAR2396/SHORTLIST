@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 
 interface Props {
@@ -5,14 +6,7 @@ interface Props {
 }
 
 export default function TopAppBar({ breadcrumbs }: Props) {
-  const handleRunPipeline = async () => {
-    try {
-      await api.runPipeline();
-      alert('Pipeline started! Check status on the Dashboard.');
-    } catch (err) {
-      alert(`Failed to start pipeline: ${err}`);
-    }
-  };
+  const navigate = useNavigate();
 
   return (
     <header className="bg-surface border-b border-outline-variant sticky top-0 z-10 flex justify-between items-center w-full px-8 py-4 h-16">
@@ -44,7 +38,7 @@ export default function TopAppBar({ breadcrumbs }: Props) {
           Export CSV
         </button>
         <button
-          onClick={handleRunPipeline}
+          onClick={() => navigate('/pipeline')}
           className="px-4 py-2 bg-primary-container text-on-primary rounded text-label-md active:scale-95 transition-transform hover:bg-primary-container/90 shadow-none"
         >
           Run New Pipeline
