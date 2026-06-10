@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+.git/
+.pytest_cache/
+.hypothesis/
+frontend/
+tests/
+uploads/
+candidates.jsonl
+*.pyc
+.DS_Store
+node_modules/

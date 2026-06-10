@@ -32,9 +32,7 @@ from backend.service import BIAS_FLAG_THRESHOLD, REPO_ROOT, service
 
 app = FastAPI(title="Shortlist Backend", version="1.0.0")
 
-# Allow the Vite dev server (and the production preview) to call the API
-# directly in case the proxy is bypassed. The Vite proxy in vite.config.ts
-# routes /api -> http://localhost:8080 in development.
+# Allow the Vite dev server, Vercel production, and preview deployments.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -43,6 +41,7 @@ app.add_middleware(
         "http://localhost:4173",
         "http://127.0.0.1:4173",
     ],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

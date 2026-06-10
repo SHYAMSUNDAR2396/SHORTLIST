@@ -8,7 +8,11 @@ import type {
   PipelineStatus,
 } from './types';
 
-const BASE = '/api';
+// In development, Vite proxies /api -> localhost:8080.
+// In production (Vercel), VITE_API_URL points to the deployed backend.
+const BASE = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : '/api';
 
 async function fetchJSON<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
