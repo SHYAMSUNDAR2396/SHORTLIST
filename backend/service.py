@@ -176,17 +176,28 @@ class PipelineService:
     # Pipeline execution
     # ------------------------------------------------------------------
     def resolve_source(self) -> Path:
-        """Pick the candidate source: full dataset if present, else sample."""
-        if DEFAULT_CANDIDATES.exists():
-            return DEFAULT_CANDIDATES
-        if SAMPLE_CANDIDATES.exists():
-            return SAMPLE_CANDIDATES
-        # Check uploads/ for any .jsonl or .json file
+        """Pick the candidate source — prefers uploaded data over full dataset.
+
+        On free-tier hosts (512 MB RAM), the full 100K candidates.jsonl
+        (~1.1 GB in memory) would OOM. The pipeline only processes:
+        1. An explicitly uploaded file (via the pipeline setup page)
+        2. sample_candidates.json (50 records, ~50 KB) as a demo fallback
+        3. The full dataset ONLY if it exists and nothing else is available
+
+        Users should upload their own subset for deployed instances.
+        """
+        # 1. Check uploads/ for user-provided data (always small)
         for f in sorted(UPLOAD_DIR.glob("*.jsonl")) + sorted(UPLOAD_DIR.glob("*.json")):
             return f
+        # 2. Sample data (safe for free tier)
+        if SAMPLE_CANDIDATES.exists():
+            return SAMPLE_CANDIDATES
+        # 3. Full dataset (only works with enough RAM)
+        if DEFAULT_CANDIDATES.exists():
+            return DEFAULT_CANDIDATES
         raise FileNotFoundError(
-            "No candidate data found. Upload a candidates.jsonl or "
-            "sample_candidates.json file via the pipeline setup page."
+            "No candidate data found. Upload a candidates file (.jsonl or .json) "
+            "via the pipeline setup page to get started."
         )
 
     def run(self, candidates_path: Optional[str] = None) -> dict:
@@ -253,13 +264,13 @@ class PipelineService:
                 self._state.running = False
 
     def ensure_loaded(self) -> None:
-        """Run the pipeline once on first access if it hasn't run yet."""
-        if not self._state.has_run and not self._state.running:
-            try:
-                self.run()
-            except Exception:
-                # No data available yet — return empty state, don't crash.
-                pass
+        """Return cached results if available. Does NOT auto-run the pipeline.
+
+        On free-tier hosts (512 MB), loading 100K candidates would OOM.
+        The pipeline only runs when the user explicitly triggers it via
+        POST /api/run after uploading their (smaller) dataset.
+        """
+        pass  # No auto-run; the frontend shows empty state until user runs
 
     # ------------------------------------------------------------------
     # Internal: loading + scoring

@@ -183,7 +183,14 @@ def pipeline_status() -> dict:
 def run_pipeline() -> dict:
     if service.running:
         return {"message": "Pipeline already running"}
-    result = service.run()
+
+    # Use the uploaded source (small dataset) or error with guidance.
+    source = service._state.source_path  # noqa: SLF001
+    if source:
+        result = service.run(candidates_path=source)
+    else:
+        result = service.run()
+
     if result.get("returncode") != 0:
         raise HTTPException(status_code=500, detail=result.get("error", "Pipeline failed"))
     return {"message": "Pipeline completed"}
