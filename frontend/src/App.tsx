@@ -4,24 +4,33 @@ import DashboardPage from './pages/DashboardPage';
 import CandidateDetailPage from './pages/CandidateDetailPage';
 import AuditReportPage from './pages/AuditReportPage';
 import SetupPipelinePage from './pages/SetupPipelinePage';
+import LandingPage from './pages/LandingPage';
 
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="flex min-h-screen bg-background">
-        <SideNavBar />
-        <div className="flex-1 ml-[220px] flex flex-col min-w-0">
-          <Routes>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/candidates/:id" element={<CandidateDetailPage />} />
-            <Route path="/candidates" element={<DashboardPage />} />
-            <Route path="/audit" element={<AuditReportPage />} />
-            <Route path="/pipeline" element={<SetupPipelinePage />} />
-            <Route path="/jobs" element={<PlaceholderPage title="Job Roles" icon="work" />} />
-            <Route path="/settings" element={<PlaceholderPage title="Settings" icon="settings" />} />
-          </Routes>
-        </div>
-      </div>
+      <Routes>
+        {/* Landing page — full-width, no sidebar */}
+        <Route path="/landing" element={<LandingPage />} />
+
+        {/* App shell with sidebar */}
+        <Route path="/*" element={
+          <div className="flex min-h-screen bg-background">
+            <SideNavBar />
+            <div className="flex-1 ml-[220px] flex flex-col min-w-0">
+              <Routes>
+                <Route path="/" element={<DashboardPage />} />
+                <Route path="/candidates/:id" element={<CandidateDetailPage />} />
+                <Route path="/candidates" element={<DashboardPage />} />
+                <Route path="/audit" element={<AuditReportPage />} />
+                <Route path="/pipeline" element={<SetupPipelinePage />} />
+                <Route path="/jobs" element={<PlaceholderPage title="Job Roles" icon="work" />} />
+                <Route path="/settings" element={<PlaceholderPage title="Settings" icon="settings" />} />
+              </Routes>
+            </div>
+          </div>
+        } />
+      </Routes>
     </BrowserRouter>
   );
 }
