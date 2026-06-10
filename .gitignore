@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Uploads (user-staged files)
+uploads/
+
+# Test / Coverage
+.pytest_cache/
+htmlcov/
+.coverage
+*.cover
+
+# Hypothesis database
+.hypothesis/
+
+# Large data files (keep in repo per hackathon rules, but ignore if needed)
+# candidates.jsonl
+
+# Byte-compiled output
+*.pyc
+
+# Environment variables
+.env
+.env.local
