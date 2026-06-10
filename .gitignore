@@ -38,8 +38,9 @@ htmlcov/
 # Hypothesis database
 .hypothesis/
 
-# Large data files (keep in repo per hackathon rules, but ignore if needed)
-# candidates.jsonl
+# Large data files (too big for GitHub; download separately for reproduction)
+candidates.jsonl
+data/candidates.jsonl
 
 # Byte-compiled output
 *.pyc
