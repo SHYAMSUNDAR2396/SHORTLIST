@@ -9,13 +9,9 @@ RUN pip install --no-cache-dir -r requirements.txt -r backend/requirements.txt
 # Copy application code
 COPY ranking/ ./ranking/
 COPY backend/ ./backend/
-COPY rank.py conftest.py pytest.ini ./
+COPY rank.py ./
 
-# Copy data files (sample only; full dataset mounted at runtime if needed)
-COPY sample_candidates.json sample_submission.csv candidate_schema.json ./
-COPY validate_submission.py ./
-
-# Create uploads directory
+# Create directories
 RUN mkdir -p uploads
 
 EXPOSE 8080

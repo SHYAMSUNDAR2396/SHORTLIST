@@ -46,6 +46,7 @@ import rank as pipeline
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CANDIDATES = REPO_ROOT / "candidates.jsonl"
 SAMPLE_CANDIDATES = REPO_ROOT / "sample_candidates.json"
+UPLOAD_DIR = REPO_ROOT / "uploads"
 
 TOP_N = 100
 # Counterfactual delta above which a candidate is flagged for potential bias.
@@ -178,7 +179,15 @@ class PipelineService:
         """Pick the candidate source: full dataset if present, else sample."""
         if DEFAULT_CANDIDATES.exists():
             return DEFAULT_CANDIDATES
-        return SAMPLE_CANDIDATES
+        if SAMPLE_CANDIDATES.exists():
+            return SAMPLE_CANDIDATES
+        # Check uploads/ for any .jsonl or .json file
+        for f in sorted(UPLOAD_DIR.glob("*.jsonl")) + sorted(UPLOAD_DIR.glob("*.json")):
+            return f
+        raise FileNotFoundError(
+            "No candidate data found. Upload a candidates.jsonl or "
+            "sample_candidates.json file via the pipeline setup page."
+        )
 
     def run(self, candidates_path: Optional[str] = None) -> dict:
         """Run the full pipeline and cache enriched results.
@@ -246,7 +255,11 @@ class PipelineService:
     def ensure_loaded(self) -> None:
         """Run the pipeline once on first access if it hasn't run yet."""
         if not self._state.has_run and not self._state.running:
-            self.run()
+            try:
+                self.run()
+            except Exception:
+                # No data available yet — return empty state, don't crash.
+                pass
 
     # ------------------------------------------------------------------
     # Internal: loading + scoring
